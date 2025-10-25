@@ -4,12 +4,11 @@ let drawing = false;
 
 ctx.fillStyle = "white";
 ctx.fillRect(0, 0, canvas.width, canvas.height);
-ctx.lineWidth = 12;           // 线条粗细
+ctx.lineWidth = 12;
 ctx.lineCap = "round";
 ctx.lineJoin = "round";
 ctx.strokeStyle = "black";
 
-// 允许多笔划，保留已有绘制内容
 canvas.addEventListener("mousedown", e => {
   drawing = true;
   const rect = canvas.getBoundingClientRect();
@@ -28,7 +27,7 @@ let lastTime = 0;
 canvas.addEventListener("mousemove", async e => {
   if (!drawing) return;
   const now = Date.now();
-  if (now - lastTime > 500) { // 每0.5秒预测一次
+  if (now - lastTime > 500) { // detect every 0.5 sec
     lastTime = now;
     const dataUrl = canvas.toDataURL("image/png");
     const res = await fetch("/predict", {
@@ -46,7 +45,7 @@ canvas.addEventListener("mousemove", async e => {
 
 canvas.addEventListener("mouseup", () => {
   drawing = false;
-  ctx.closePath();  // 不清空，只结束路径
+  ctx.closePath();
 });
 
 canvas.addEventListener("mouseleave", () => {
@@ -54,7 +53,7 @@ canvas.addEventListener("mouseleave", () => {
   ctx.closePath();
 });
 
-// 清空按钮
+// Clear
 document.getElementById("clear-btn").onclick = () => {
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
