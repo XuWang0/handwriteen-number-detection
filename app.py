@@ -76,10 +76,10 @@ def preprocess(img_bytes):
     # color invert, same as MINST dataset
     image = ImageOps.invert(image)
 
-    # 二值化去噪
+    # binarization
     image = image.point(lambda x: 0 if x < 30 else 255, 'L')
 
-    # 自动裁剪有效区域
+    # cut out the useful part
     np_img = np.array(image)
     mask = np_img > 0
     if mask.any():
@@ -87,16 +87,16 @@ def preprocess(img_bytes):
         x1, x2, y1, y2 = xs.min(), xs.max(), ys.min(), ys.max()
         image = image.crop((x1, y1, x2 + 1, y2 + 1))
 
-    # 缩放到 20x20
+    # zoom in 20x20
     image = image.resize((20, 20), Image.LANCZOS)
 
-    # 居中贴到 28x28
+    # put it in the center of a pic 28x28
     canvas = Image.new("L", (28, 28), 0)
     left = (28 - 20) // 2
     top = (28 - 20) // 2
     canvas.paste(image, (left, top))
 
-    # 模拟 MNIST 的灰度分布：轻微模糊 + 归一化
+    # simulate MNIST：slightly blurry + normalization
     canvas = canvas.filter(ImageFilter.GaussianBlur(radius=1))
     arr = np.array(canvas).astype("float32") / 255.0
     arr = (arr - 0.1307) / 0.3081
@@ -104,7 +104,7 @@ def preprocess(img_bytes):
     return torch.tensor(arr)
 
 
-# ---------------- Flask 路由 ----------------
+# ---------------- Flask route ----------------
 @app.route("/")
 def index():
     return render_template("index.html")  # 对应 templates/index.html
