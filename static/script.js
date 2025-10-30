@@ -27,7 +27,7 @@ let lastTime = 0;
 canvas.addEventListener("mousemove", async e => {
   if (!drawing) return;
   const now = Date.now();
-  if (now - lastTime > 500) { // detect every 0.5 sec
+  if (now - lastTime > 20) { // detect every 0.02 sec
     lastTime = now;
     const dataUrl = canvas.toDataURL("image/png");
     const res = await fetch("/predict", {

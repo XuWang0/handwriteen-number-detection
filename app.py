@@ -29,7 +29,7 @@ class BetterCNN(nn.Module):
         return self.net(x)
 
 
-# ---------------- Training / Load model ----------------
+# ---------------- Training / Loading model ----------------
 def get_or_train_model():
     model = BetterCNN()
 
@@ -73,13 +73,13 @@ def preprocess(img_bytes):
     from PIL import ImageFilter
     image = Image.open(io.BytesIO(img_bytes)).convert("L")
 
-    # color invert, same as MINST dataset
+    # color invert, make it same as MINST dataset
     image = ImageOps.invert(image)
 
     # binarization
     image = image.point(lambda x: 0 if x < 30 else 255, 'L')
 
-    # cut out the useful part
+    # get the written part
     np_img = np.array(image)
     mask = np_img > 0
     if mask.any():
@@ -107,7 +107,7 @@ def preprocess(img_bytes):
 # ---------------- Flask route ----------------
 @app.route("/")
 def index():
-    return render_template("index.html")  # 对应 templates/index.html
+    return render_template("index.html")  # templates/index.html
 
 
 @app.route("/predict", methods=["POST"])
